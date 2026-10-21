@@ -1,7 +1,7 @@
-// src/screens/AccountScreen.tsx
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import crashlytics from '@react-native-firebase/crashlytics';
 import { useAuthStore } from '../store/useAuthStore';
 
 export function AccountScreen({ navigation }: any) {
@@ -33,6 +33,23 @@ export function AccountScreen({ navigation }: any) {
         >
           <Text style={styles.menuText}>🧪 Redux Toolkit Demo (Đề cương)</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={[styles.menuGroup, { padding: 14 }]}>
+        <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#6B7280', marginBottom: 8, textAlign: 'center' }}>
+          THỬ NGHIỆM CRASHLYTICS (KIỂM TRA BÁO CÁO LỖI)
+        </Text>
+        <Button
+          title="Test Crashlytics"
+          color="#DC2626"
+          onPress={() => {
+            // Ghi vết hành vi trước khi crash
+            crashlytics().log('User bấm nút Test Crash');
+
+            // Cố ý gây ra lỗi để làm sập app
+            crashlytics().crash();
+          }}
+        />
       </View>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={logout} activeOpacity={0.8}>

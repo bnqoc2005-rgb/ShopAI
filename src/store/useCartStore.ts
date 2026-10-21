@@ -8,7 +8,9 @@ export interface CartItem extends Product {
 
 interface CartState {
   cart: CartItem[];
-  addToCart: (product: Product) => void;
+  items: CartItem[];
+  addToCart: (product: any) => void;
+  addItem: (product: any) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
@@ -16,19 +18,28 @@ interface CartState {
 
 export const useCartStore = create<CartState>((set, get) => ({
   cart: [],
+  get items() {
+    return this.cart;
+  },
   addToCart: (product) =>
     set((state) => {
       const existingIndex = state.cart.findIndex((item) => item.id === product.id);
+      let updated: CartItem[];
       if (existingIndex > -1) {
-        const updatedCart = [...state.cart];
-        updatedCart[existingIndex].quantity += 1;
-        return { cart: updatedCart };
+        updated = [...state.cart];
+        updated[existingIndex].quantity += 1;
+      } else {
+        updated = [...state.cart, { ...product, quantity: 1 }];
       }
-      return { cart: [...state.cart, { ...product, quantity: 1 }] };
+      return { cart: updated, items: updated };
     }),
+  addItem: (product) => get().addToCart(product),
   removeFromCart: (id) =>
-    set((state) => ({ cart: state.cart.filter((item) => item.id !== id) })),
-  clearCart: () => set({ cart: [] }),
+    set((state) => {
+      const filtered = state.cart.filter((item) => item.id !== id);
+      return { cart: filtered, items: filtered };
+    }),
+  clearCart: () => set({ cart: [], items: [] }),
   getTotalPrice: () => {
     return get().cart.reduce((total, item) => {
       const priceNum =

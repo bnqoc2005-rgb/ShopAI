@@ -1,4 +1,29 @@
 {
   "name": "ShopAI",
-  "displayName": "ShopAI"
+  "displayName": "ShopAI",
+  "plugins": [
+    "expo-secure-store",
+    [
+      "expo-build-properties",
+      {
+        "android": {
+          "compileSdkVersion": 36,
+          "targetSdkVersion": 36
+        }
+      }
+    ]
+  ],
+  "android": {
+    "package": "com.anonymous.shopai"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "b7616505-9699-47f6-8d3f-0eb8a48c4c2f"
+    }
+  },
+  "runtimeVersion": "1.0.0",
+  "updates": {
+    "url": "https://u.expo.dev/b7616505-9699-47f6-8d3f-0eb8a48c4c2f"
+  },
+  "ios": {}
 }

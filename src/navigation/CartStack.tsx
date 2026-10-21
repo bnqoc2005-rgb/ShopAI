@@ -5,6 +5,7 @@ import { CartScreen } from '../screens/CartScreen';
 import { CheckoutScreen } from '../screens/CheckoutScreen';
 import { OrdersScreen } from '../screens/OrdersScreen';
 import { OrderDetailScreen } from '../screens/OrderDetailScreen';
+import { CheckoutModal } from '../screens/CheckoutModal';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +14,11 @@ export function CartStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="CartHome" component={CartScreen} />
       <Stack.Screen name="Checkout" component={CheckoutScreen} />
+      <Stack.Screen 
+        name="CheckoutModal" 
+        component={CheckoutModal} 
+        options={{ presentation: 'transparentModal', animation: 'fade' }} 
+      />
       <Stack.Screen name="Orders" component={OrdersScreen} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
     </Stack.Navigator>

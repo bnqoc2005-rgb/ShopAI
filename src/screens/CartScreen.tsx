@@ -57,7 +57,7 @@ export function CartScreen({ navigation }: any) {
           onPress={() => (navigation?.navigate ? navigation.navigate('Checkout') : null)}
           activeOpacity={0.8}
         >
-          <Text style={styles.checkoutText}>Thanh toán</Text>
+          <Text style={styles.checkoutText}>⚡ Tiến hành thanh toán</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeStack } from './HomeStack';
 import { CartStack } from './CartStack';
 import { AccountScreen } from '../screens/AccountScreen';
+import { OrdersStack } from './OrdersStack';
 import { useCartStore } from '../store/useCartStore';
 
 const Tab = createBottomTabNavigator();
@@ -22,6 +23,8 @@ export function MainTabNavigator({ onLogout }: { onLogout?: () => void }) {
         tabBarIcon: ({ color }) => {
           if (route.name === 'HomeTab') {
             return <Text style={{ fontSize: 18, color }}>⌂</Text>;
+          } else if (route.name === 'OrdersTab') {
+            return <Text style={{ fontSize: 18, color }}>📦</Text>;
           } else if (route.name === 'CartTab') {
             return (
               <View style={{ width: 28, height: 24, justifyContent: 'center', alignItems: 'center' }}>
@@ -45,6 +48,12 @@ export function MainTabNavigator({ onLogout }: { onLogout?: () => void }) {
       >
         {(props) => <HomeStack {...props} onLogout={onLogout} />}
       </Tab.Screen>
+
+      <Tab.Screen 
+        name="OrdersTab" 
+        component={OrdersStack} 
+        options={{ title: 'Đơn hàng' }} 
+      />
       
       <Tab.Screen 
         name="CartTab" 

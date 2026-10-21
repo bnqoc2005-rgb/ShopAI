@@ -17,8 +17,11 @@
       "@utils/*": ["src/utils/*"],
       "@constants/*": ["src/constants/*"],
       "@types/*": ["src/types/*"],
-      "@contexts/*": ["src/contexts/*"]
+      "@contexts/*": ["src/contexts/*"],
+      "@api/*": ["src/api/*"],
+      "@api": ["src/api/index", "src/api/axiosClient"]
     }
+
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]

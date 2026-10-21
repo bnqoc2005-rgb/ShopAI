@@ -4,7 +4,15 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useCartStore } from '../store/useCartStore';
 import { ProductSchema, Product } from '../schemas/product';
 
-export function ProductCard({ item, onPress }: { item: Product; onPress?: () => void }) {
+export function ProductCard({
+  item,
+  onPress,
+  onBuyNow,
+}: {
+  item: Product;
+  onPress?: () => void;
+  onBuyNow?: () => void;
+}) {
   const addToCart = useCartStore((state) => state.addToCart);
 
   // Trạm kiểm soát Zod dữ liệu
@@ -33,9 +41,22 @@ export function ProductCard({ item, onPress }: { item: Product; onPress?: () => 
       </Text>
       <Text style={styles.cardCategory}>{item.category}</Text>
       <Text style={styles.cardPrice}>{displayPrice}</Text>
-      <TouchableOpacity style={styles.buyBtn} onPress={() => addToCart(item)} activeOpacity={0.8}>
-        <Text style={styles.buyBtnText}>Mua ngay</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', gap: 6 }}>
+        <TouchableOpacity
+          style={[styles.buyBtn, { flex: 1, backgroundColor: '#FF424E' }]}
+          onPress={onBuyNow}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buyBtnText}>Mua ngay</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buyBtn, { width: 36, backgroundColor: '#10B981' }]}
+          onPress={() => addToCart(item)}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buyBtnText}>🛒</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 }

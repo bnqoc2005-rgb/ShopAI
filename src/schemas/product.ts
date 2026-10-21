@@ -6,8 +6,8 @@ export const ProductSchema = z.object({
   code: z.string().optional(),
   name: z.string().min(1, 'Tên không được để trống'),
   price: z.number().positive(),
-  category: z.string(),
-  stock: z.number().int().nonnegative(),
+  category: z.string().optional().default('Công nghệ'),
+  stock: z.number().int().nonnegative().optional().default(10),
   image: z.string().url(),
   description: z.string().optional(),
 });

@@ -1,17 +1,45 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
+import axiosClient from '@api/axiosClient';
 import { useAuthStore } from '../store/useAuthStore';
+import { COLORS, SIZES } from '../constants/theme';
 
-export function LoginScreen({ navigation, onLogin }: any) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export function LoginScreen({ navigation }: any) {
+  const [email, setEmail] = useState('demo@shopai.com');
+  const [password, setPassword] = useState('123456');
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [clientError, setClientError] = useState<string | null>(null);
+
   const login = useAuthStore((state) => state.login);
 
-  const handleLogin = () => {
-    if (onLogin) {
-      onLogin();
-    } else {
-      login(email || 'baongoc@gmail.com');
+  const validate = () => {
+    if (!email || !email.includes('@')) {
+      setClientError('Email không đúng định dạng');
+      return false;
+    }
+    if (!password || password.length < 6) {
+      setClientError('Mật khẩu phải từ 6 ký tự');
+      return false;
+    }
+    setClientError(null);
+    return true;
+  };
+
+  const handleLogin = async () => {
+    if (!validate()) return; // Validate phía Client: chặn sớm trước khi tốn 1 request
+    setLoading(true);
+    setServerError(null);
+
+    try {
+      const response = await axiosClient.post('/api/auth/login', { email, password });
+      const token = response.data.access_token || response.data.accessToken;
+      login(token, response.data.user);
+    } catch (error: any) {
+      // 401 từ AuthService: "Email hoặc mật khẩu không đúng"
+      setServerError(error?.response?.data?.message ?? 'Đăng nhập thất bại, vui lòng thử lại');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,8 +54,11 @@ export function LoginScreen({ navigation, onLogin }: any) {
           <TextInput
             style={styles.input}
             value={email}
-            onChangeText={setEmail}
-            placeholder="you@example.com"
+            onChangeText={(text) => {
+              setEmail(text);
+              setClientError(null);
+            }}
+            placeholder="demo@shopai.com"
             placeholderTextColor="#A0AEC0"
             keyboardType="email-address"
             autoCapitalize="none"
@@ -39,20 +70,35 @@ export function LoginScreen({ navigation, onLogin }: any) {
           <TextInput
             style={styles.input}
             value={password}
-            onChangeText={setPassword}
-            placeholder="Ít nhất 6 ký tự"
+            onChangeText={(text) => {
+              setPassword(text);
+              setClientError(null);
+            }}
+            placeholder="Mật khẩu từ 6 ký tự"
             placeholderTextColor="#A0AEC0"
             secureTextEntry
           />
         </View>
 
-        <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin} activeOpacity={0.8}>
-          <Text style={styles.primaryBtnText}>Đăng nhập ngay</Text>
+        {clientError && <Text style={styles.errorText}>⚠️ {clientError}</Text>}
+        {serverError && <Text style={styles.errorText}>⚠️ {serverError}</Text>}
+
+        <TouchableOpacity
+          style={[styles.primaryBtn, loading && { opacity: 0.7 }]}
+          onPress={handleLogin}
+          disabled={loading}
+          activeOpacity={0.8}
+        >
+          {loading ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <Text style={styles.primaryBtnText}>Đăng nhập ngay</Text>
+          )}
         </TouchableOpacity>
 
         <View style={styles.footerRow}>
           <Text style={styles.footerText}>Chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <TouchableOpacity onPress={() => navigation?.navigate('Register')}>
             <Text style={styles.linkText}>Đăng ký</Text>
           </TouchableOpacity>
         </View>
@@ -64,7 +110,7 @@ export function LoginScreen({ navigation, onLogin }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FAFAFA' },
   content: { flex: 1, paddingHorizontal: 24, justifyContent: 'center' },
-  title: { fontSize: 30, fontWeight: 'bold', color: '#FF424E', textAlign: 'center', marginBottom: 6 },
+  title: { fontSize: 30, fontWeight: 'bold', color: COLORS.primary || '#FF424E', textAlign: 'center', marginBottom: 6 },
   subtitle: { fontSize: 13, color: '#787878', textAlign: 'center', marginBottom: 28 },
   inputGroup: { marginBottom: 14 },
   label: { fontSize: 12, color: '#555', marginBottom: 6 },
@@ -78,8 +124,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  errorText: {
+    color: COLORS.danger || '#EF4444',
+    fontSize: SIZES.body2 || 13,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   primaryBtn: {
-    backgroundColor: '#FF424E',
+    backgroundColor: COLORS.primary || '#FF424E',
     borderRadius: 10,
     height: 44,
     justifyContent: 'center',
@@ -90,7 +142,7 @@ const styles = StyleSheet.create({
   primaryBtnText: { color: '#FFF', fontWeight: 'bold', fontSize: 15 },
   footerRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   footerText: { color: '#787878', fontSize: 13 },
-  linkText: { color: '#FF424E', fontWeight: 'bold', fontSize: 13 },
+  linkText: { color: COLORS.primary || '#FF424E', fontWeight: 'bold', fontSize: 13 },
 });
 
 export default LoginScreen;

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1075738225993",
+    "project_id": "shopai-9702c",
+    "storage_bucket": "shopai-9702c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075738225993:android:655d710608e4688f463e98",
+        "android_client_info": {
+          "package_name": "com.anonymous.shopai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR_GF_C2wFwjNxjoxuRrzUaQd-9-p96BI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
